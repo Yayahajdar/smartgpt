@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center mt-5">
+  <h1>Welcome to the Smart Home Dashboard</h1>
+  <p>Manage your data, view weather information, and more.</p>
+  {% if not session.get('user_id') %}
+    <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+    <a href="{{ url_for('signup') }}" class="btn btn-secondary">Sign Up</a>
+  {% endif %}
+</div>
+{% endblock %}

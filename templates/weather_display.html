@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Weather Data for {{ ville_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h1>Weather & Smart Home Data for {{ ville_name }}</h1>
+    <p class="lead">Historical data from {{ start_date }} to {{ end_date }}</p>
+
+    <!-- Smart Home Dashboard -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Smart Home Dashboard</h5>
+        </div>
+        <div class="card-body text-center">
+            <img src="{{ url_for('static', filename='visualizations/' + ville_name + '_dashboard.png') }}" 
+                 alt="Smart Home Dashboard" class="img-fluid">
+        </div>
+    </div>
+
+    <!-- Device Consumption Visualizations -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Device-Specific Energy Consumption</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='visualizations/' + ville_name + '_device_consumption.png') }}" 
+                         alt="Device Consumption Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Consumption Distribution</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='visualizations/' + ville_name + '_device_consumption_pie.png') }}" 
+                         alt="Device Consumption Pie Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Visualizations -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Temperature</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='visualizations/' + ville_name + '_temperature.png') }}" 
+                         alt="Temperature Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Energy Consumption</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='visualizations/' + ville_name + '_consumption.png') }}" 
+                         alt="Consumption Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Precipitation</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='visualizations/' + ville_name + '_precipitation.png') }}" 
+                         alt="Precipitation Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Wind Speed</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='visualizations/' + ville_name + '_wind.png') }}" 
+                         alt="Wind Speed Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Data Summary</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Avg. Temperature</h5>
+                            <p class="display-4">{{ summary.avg_temp|round(1) }}°C</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Max Temperature</h5>
+                            <p class="display-4">{{ summary.max_temp|round(1) }}°C</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Total Precipitation</h5>
+                            <p class="display-4">{{ summary.total_precip|round(1) }}mm</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-dark mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Avg. Wind Speed</h5>
+                            <p class="display-4">{{ summary.avg_wind|round(1) }}km/h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Data Table -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Raw Weather Data</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Temperature (°C)</th>
+                            <th>Min Temp (°C)</th>
+                            <th>Max Temp (°C)</th>
+                            <th>Precipitation (mm)</th>
+                            <th>Wind Speed (km/h)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date, data in weather_data.items() %}
+                        <tr>
+                            <td>{{ date }}</td>
+                            <td>{{ data.temp|round(1) }}</td>
+                            <td>{{ data.temp_min|round(1) }}</td>
+                            <td>{{ data.temp_max|round(1) }}</td>
+                            <td>{{ data.precipitation|round(1) }}</td>
+                            <td>{{ data.wind_speed|round(1) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Device Consumption Data Table -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Device Consumption Data</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Device</th>
+                            <th>Total Consumption</th>
+                            <th>Average Consumption</th>
+                            <th>Max Consumption</th>
+                            <th>Percentage of Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if device_data %}
+                            {% for device, stats in device_data.items() %}
+                            <tr>
+                                <td>{{ device }}</td>
+                                <td>{{ stats.total|round(2) }} kWh</td>
+                                <td>{{ stats.avg|round(2) }} kWh</td>
+                                <td>{{ stats.max|round(2) }} kWh</td>
+                                <td>{{ stats.percentage|round(1) }}%</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No device consumption data available</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <a href="{{ url_for('historical_weather') }}" class="btn btn-secondary">Back to Weather Search</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
