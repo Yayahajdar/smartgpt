@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-CSV Data Processor and Visualizer
-
-This script imports multiple CSV files, cleans the data, and creates visualizations.
-"""
 
 import os
 import pandas as pd
